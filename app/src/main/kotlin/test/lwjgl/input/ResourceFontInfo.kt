@@ -8,7 +8,7 @@ internal class ResourceFontInfo(
     private val uri: URI,
     override val height: Float,
 ) : FontInfo {
-    override val id: String = uri.toString()
+    override val id: String = "u:$uri-h:$height" // todo
 
     override fun getInputStream(): InputStream {
         return Thread.currentThread().contextClassLoader.getResourceAsStream(uri.toString())
