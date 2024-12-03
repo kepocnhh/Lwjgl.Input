@@ -38,7 +38,7 @@ internal class InputEngineLogics(
         canvas: Canvas,
         fontInfo: FontInfo,
     ) {
-        val max = 24
+        val max = 28
         val color = Color.Green.copy(alpha = 0.5f)
         (1..max).forEach { number ->
             canvas.texts.draw(
@@ -84,6 +84,8 @@ internal class InputEngineLogics(
             KeyboardButton.Number9 -> "9"
             KeyboardButton.Minus -> "-"
             KeyboardButton.Equal -> "="
+            KeyboardButton.Escape -> "Esc"
+            KeyboardButton.Control -> "Ctrl"
             else -> button.name
         }
     }
@@ -156,6 +158,8 @@ internal class InputEngineLogics(
             KeyboardButton.Number8,
             KeyboardButton.Number9,
             KeyboardButton.Number0,
+            KeyboardButton.Minus,
+            KeyboardButton.Equal,
         ).forEachIndexed { index, button ->
             drawButton(
                 canvas = canvas,
@@ -186,6 +190,117 @@ internal class InputEngineLogics(
                 )
             }
         }
+        drawButton(
+            canvas = canvas,
+            fontInfo = fontInfo,
+            pointTopLeft = pointOf(
+                x = 17,
+                y = 8,
+            ),
+            width = 2.0,
+            height = 2.0,
+            button = KeyboardButton.Up,
+            text = "/\\"
+        )
+        drawButton(
+            canvas = canvas,
+            fontInfo = fontInfo,
+            pointTopLeft = pointOf(
+                x = 14,
+                y = 10,
+            ),
+            width = 2.0,
+            height = 2.0,
+            button = KeyboardButton.Left,
+            text = "<-"
+        )
+        drawButton(
+            canvas = canvas,
+            fontInfo = fontInfo,
+            pointTopLeft = pointOf(
+                x = 20,
+                y = 10,
+            ),
+            width = 2.0,
+            height = 2.0,
+            button = KeyboardButton.Right,
+            text = "->"
+        )
+        drawButton(
+            canvas = canvas,
+            fontInfo = fontInfo,
+            pointTopLeft = pointOf(
+                x = 17,
+                y = 12,
+            ),
+            width = 2.0,
+            height = 2.0,
+            button = KeyboardButton.Down,
+            text = "\\/"
+        )
+        listOf(
+            KeyboardButton.Escape,
+            KeyboardButton.Tab,
+            KeyboardButton.Shift,
+        ).forEachIndexed { index, button ->
+            drawButton(
+                canvas = canvas,
+                fontInfo = fontInfo,
+                pointTopLeft = pointOf(
+                    x = 2,
+                    y = 10 + index * 2,
+                ),
+                width = 3.0,
+                button = button,
+            )
+        }
+        listOf(
+            KeyboardButton.Control,
+            KeyboardButton.Alt,
+            KeyboardButton.Super,
+        ).forEachIndexed { index, button ->
+            drawButton(
+                canvas = canvas,
+                fontInfo = fontInfo,
+                pointTopLeft = pointOf(
+                    x = 2 + index * 4,
+                    y = 16,
+                ),
+                width = 3.0,
+                button = button,
+            )
+        }
+        drawButton(
+            canvas = canvas,
+            fontInfo = fontInfo,
+            pointTopLeft = pointOf(
+                x = 14,
+                y = 16,
+            ),
+            width = 7.0,
+            button = KeyboardButton.Space,
+        )
+        drawButton(
+            canvas = canvas,
+            fontInfo = fontInfo,
+            pointTopLeft = pointOf(
+                x = 20,
+                y = 6,
+            ),
+            width = 3.0,
+            button = KeyboardButton.Backspace,
+            text = "<x"
+        )
+        drawButton(
+            canvas = canvas,
+            fontInfo = fontInfo,
+            pointTopLeft = pointOf(
+                x = 20,
+                y = 8,
+            ),
+            width = 3.0,
+            button = KeyboardButton.Enter,
+        )
     }
 
     override fun onRender(canvas: Canvas) {
@@ -201,10 +316,14 @@ internal class InputEngineLogics(
 //            text = String.format("%6.2f", engine.property.time.frequency()),
 //            measure = measure,
 //        )
-        onRenderGrid(
-            canvas = canvas,
-            fontInfo = fontInfo,
-        )
+//        onRenderGrid(
+//            canvas = canvas,
+//            fontInfo = engine.fontAgent.getFontInfo(
+//                uri = URI("JetBrainsMono.ttf"),
+//                height = 0.75,
+//                measure = measure,
+//            ),
+//        )
         onRenderInput(
             canvas = canvas,
             fontInfo = fontInfo,
