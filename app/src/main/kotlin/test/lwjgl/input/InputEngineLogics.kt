@@ -58,13 +58,13 @@ internal class InputEngineLogics(
             canvas.vectors.draw(
                 color = color,
                 vector = pointOf(x = 0, y = number) + pointOf(x = max, y = number),
-                lineWidth = 0.1,
+                lineWidth = 0.05,
                 measure = measure,
             )
             canvas.vectors.draw(
                 color = color,
                 vector = pointOf(x = number, y = 0) + pointOf(x = number, y = max),
-                lineWidth = 0.1,
+                lineWidth = 0.05,
                 measure = measure,
             )
         }
@@ -110,38 +110,32 @@ internal class InputEngineLogics(
             text = text,
             measure = measure,
         )
-        if (isPressed) {
-            canvas.polygons.drawRectangle(
-                color = Color.Yellow,
-                pointTopLeft = pointTopLeft,
-                size = sizeOf(
-                    width = width,
-                    height = height,
-                ),
-                lineWidth = 0.1,
-                measure = measure,
-            )
-        }
+        canvas.polygons.drawRectangle(
+            color = if (isPressed) Color.Yellow else Color.Green,
+            pointTopLeft = pointTopLeft,
+            size = sizeOf(
+                width = width,
+                height = height,
+            ),
+            lineWidth = if (isPressed) 0.1 else 0.05,
+            measure = measure,
+        )
         val passed = engine.input.keyboard.whenPressed(button)?.let { whenPressed ->
             engine.property.time.b - whenPressed
         }
         if (passed != null) {
-            val f = engine.fontAgent.getFontInfo(
-                uri = URI("JetBrainsMono.ttf"),
-                height = 0.75,
-                measure = measure,
-            )
-            val t = String.format("%02d:%02d", passed.inWholeSeconds, (passed.inWholeMilliseconds % 1000) / 10)
-            val fh = measure.units(f.height.toDouble())
-            val tw = measure.units(engine.fontAgent.getTextWidth(f, t))
             canvas.texts.draw(
-                info = f,
+                info = engine.fontAgent.getFontInfo(
+                    uri = URI("JetBrainsMono.ttf"),
+                    height = 0.75,
+                    measure = measure,
+                ),
                 color = Color.Yellow,
                 pointTopLeft = pointOf(
                     x = pointTopLeft.x,
                     y = pointTopLeft.y + height,
                 ),
-                text = t,
+                text = String.format("%02d:%d", passed.inWholeSeconds, (passed.inWholeMilliseconds % 1000) / 100),
                 measure = measure,
             )
         }
@@ -151,6 +145,29 @@ internal class InputEngineLogics(
         canvas: Canvas,
         fontInfo: FontInfo,
     ) {
+        listOf(
+            KeyboardButton.Number1,
+            KeyboardButton.Number2,
+            KeyboardButton.Number3,
+            KeyboardButton.Number4,
+            KeyboardButton.Number5,
+            KeyboardButton.Number6,
+            KeyboardButton.Number7,
+            KeyboardButton.Number8,
+            KeyboardButton.Number9,
+            KeyboardButton.Number0,
+        ).forEachIndexed { index, button ->
+            drawButton(
+                canvas = canvas,
+                fontInfo = fontInfo,
+                pointTopLeft = pointOf(
+                    x = index * 2,
+                    y = 0,
+                ) + offsetOf(dX = 2.0, dY = 2.0),
+                width = 1.0,
+                button = button,
+            )
+        }
         listOf(
             listOf(KeyboardButton.Q, KeyboardButton.W, KeyboardButton.E, KeyboardButton.R, KeyboardButton.T, KeyboardButton.Y, KeyboardButton.U, KeyboardButton.I, KeyboardButton.O, KeyboardButton.P),
             listOf(KeyboardButton.A, KeyboardButton.S, KeyboardButton.D, KeyboardButton.F, KeyboardButton.G, KeyboardButton.H, KeyboardButton.J, KeyboardButton.K, KeyboardButton.L),
@@ -163,7 +180,7 @@ internal class InputEngineLogics(
                     pointTopLeft = pointOf(
                         x = dX * 2,
                         y = dY * 2,
-                    ) + offsetOf(dX = 2.0, dY = 2.0),
+                    ) + offsetOf(dX = 2.0, dY = 4.0),
                     width = 1.0,
                     button = button,
                 )
