@@ -4,5 +4,11 @@ import sp.kx.lwjgl.engine.Engine
 import sp.kx.math.sizeOf
 
 fun main() {
-    Engine.run(::InputEngineLogics, size = sizeOf(640, 640), title = "Input")
+    Engine.run(
+        title = "Input",
+        supplier = ::InputEngineLogics,
+        size = sizeOf(640, 480),
+        defaultFontName = "JetBrainsMono.ttf",
+//        defaultFontName = "OpenSans.ttf",
+    )
 }

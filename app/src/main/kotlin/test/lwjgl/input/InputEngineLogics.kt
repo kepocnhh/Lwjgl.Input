@@ -5,17 +5,13 @@ import sp.kx.lwjgl.engine.EngineInputCallback
 import sp.kx.lwjgl.engine.EngineLogics
 import sp.kx.lwjgl.entity.Canvas
 import sp.kx.lwjgl.entity.Color
-import sp.kx.lwjgl.entity.copy
-import sp.kx.lwjgl.entity.font.FontInfo
 import sp.kx.lwjgl.entity.input.KeyboardButton
 import sp.kx.math.Point
-import sp.kx.math.measure.frequency
 import sp.kx.math.measure.measureOf
 import sp.kx.math.offsetOf
 import sp.kx.math.plus
 import sp.kx.math.pointOf
 import sp.kx.math.sizeOf
-import java.net.URI
 
 internal class InputEngineLogics(
     private val engine: Engine,
@@ -33,42 +29,6 @@ internal class InputEngineLogics(
         }
     }
     private val measure = measureOf(24.0)
-
-    private fun onRenderGrid(
-        canvas: Canvas,
-        fontInfo: FontInfo,
-    ) {
-        val max = 28
-        val color = Color.Green.copy(alpha = 0.5f)
-        (1..max).forEach { number ->
-            canvas.texts.draw(
-                color = color,
-                info = fontInfo,
-                pointTopLeft = pointOf(x = number, y = 0),
-                text = "$number",
-                measure = measure,
-            )
-            canvas.texts.draw(
-                color = color,
-                info = fontInfo,
-                pointTopLeft = pointOf(x = 0, y = number),
-                text = "$number",
-                measure = measure,
-            )
-            canvas.vectors.draw(
-                color = color,
-                vector = pointOf(x = 0, y = number) + pointOf(x = max, y = number),
-                lineWidth = 0.05,
-                measure = measure,
-            )
-            canvas.vectors.draw(
-                color = color,
-                vector = pointOf(x = number, y = 0) + pointOf(x = number, y = max),
-                lineWidth = 0.05,
-                measure = measure,
-            )
-        }
-    }
 
     private fun getText(button: KeyboardButton): String {
         return when (button) {
@@ -92,7 +52,6 @@ internal class InputEngineLogics(
 
     private fun drawButton(
         canvas: Canvas,
-        fontInfo: FontInfo,
         pointTopLeft: Point,
         height: Double = 1.0,
         width: Double,
@@ -100,10 +59,10 @@ internal class InputEngineLogics(
         text: String = getText(button = button),
     ) {
         val isPressed = engine.input.keyboard.isPressed(button)
-        val fontHeight = measure.units(fontInfo.height.toDouble())
-        val textWidth = measure.units(engine.fontAgent.getTextWidth(fontInfo, text))
+        val fontHeight = 1.0
+        val textWidth = canvas.texts.getTextWidth(fontHeight = fontHeight, text = text, measure = measure)
         canvas.texts.draw(
-            info = fontInfo,
+            fontHeight = fontHeight,
             color = if (isPressed) Color.Yellow else Color.Green,
             pointTopLeft = pointOf(
                 x = pointTopLeft.x + width / 2 - textWidth / 2,
@@ -127,11 +86,7 @@ internal class InputEngineLogics(
         }
         if (passed != null) {
             canvas.texts.draw(
-                info = engine.fontAgent.getFontInfo(
-                    uri = URI("JetBrainsMono.ttf"),
-                    height = 0.75,
-                    measure = measure,
-                ),
+                fontHeight = 0.75,
                 color = Color.Yellow,
                 pointTopLeft = pointOf(
                     x = pointTopLeft.x,
@@ -143,10 +98,7 @@ internal class InputEngineLogics(
         }
     }
 
-    private fun onRenderInput(
-        canvas: Canvas,
-        fontInfo: FontInfo,
-    ) {
+    override fun onRender(canvas: Canvas) {
         listOf(
             KeyboardButton.Number1,
             KeyboardButton.Number2,
@@ -163,7 +115,6 @@ internal class InputEngineLogics(
         ).forEachIndexed { index, button ->
             drawButton(
                 canvas = canvas,
-                fontInfo = fontInfo,
                 pointTopLeft = pointOf(
                     x = index * 2,
                     y = 0,
@@ -180,7 +131,6 @@ internal class InputEngineLogics(
             row.forEachIndexed { dX, button ->
                 drawButton(
                     canvas = canvas,
-                    fontInfo = fontInfo,
                     pointTopLeft = pointOf(
                         x = dX * 2,
                         y = dY * 2,
@@ -192,7 +142,6 @@ internal class InputEngineLogics(
         }
         drawButton(
             canvas = canvas,
-            fontInfo = fontInfo,
             pointTopLeft = pointOf(
                 x = 17,
                 y = 8,
@@ -204,7 +153,6 @@ internal class InputEngineLogics(
         )
         drawButton(
             canvas = canvas,
-            fontInfo = fontInfo,
             pointTopLeft = pointOf(
                 x = 14,
                 y = 10,
@@ -216,7 +164,6 @@ internal class InputEngineLogics(
         )
         drawButton(
             canvas = canvas,
-            fontInfo = fontInfo,
             pointTopLeft = pointOf(
                 x = 20,
                 y = 10,
@@ -228,7 +175,6 @@ internal class InputEngineLogics(
         )
         drawButton(
             canvas = canvas,
-            fontInfo = fontInfo,
             pointTopLeft = pointOf(
                 x = 17,
                 y = 12,
@@ -245,7 +191,6 @@ internal class InputEngineLogics(
         ).forEachIndexed { index, button ->
             drawButton(
                 canvas = canvas,
-                fontInfo = fontInfo,
                 pointTopLeft = pointOf(
                     x = 2,
                     y = 10 + index * 2,
@@ -261,7 +206,6 @@ internal class InputEngineLogics(
         ).forEachIndexed { index, button ->
             drawButton(
                 canvas = canvas,
-                fontInfo = fontInfo,
                 pointTopLeft = pointOf(
                     x = 2 + index * 4,
                     y = 16,
@@ -272,7 +216,6 @@ internal class InputEngineLogics(
         }
         drawButton(
             canvas = canvas,
-            fontInfo = fontInfo,
             pointTopLeft = pointOf(
                 x = 14,
                 y = 16,
@@ -282,7 +225,6 @@ internal class InputEngineLogics(
         )
         drawButton(
             canvas = canvas,
-            fontInfo = fontInfo,
             pointTopLeft = pointOf(
                 x = 20,
                 y = 6,
@@ -293,40 +235,12 @@ internal class InputEngineLogics(
         )
         drawButton(
             canvas = canvas,
-            fontInfo = fontInfo,
             pointTopLeft = pointOf(
                 x = 20,
                 y = 8,
             ),
             width = 3.0,
             button = KeyboardButton.Enter,
-        )
-    }
-
-    override fun onRender(canvas: Canvas) {
-        val fontInfo = engine.fontAgent.getFontInfo(
-            uri = URI("JetBrainsMono.ttf"),
-            height = 1.0,
-            measure = measure,
-        )
-//        canvas.texts.draw(
-//            info = fontInfo,
-//            pointTopLeft = Point.Center,
-//            color = Color.Green,
-//            text = String.format("%6.2f", engine.property.time.frequency()),
-//            measure = measure,
-//        )
-//        onRenderGrid(
-//            canvas = canvas,
-//            fontInfo = engine.fontAgent.getFontInfo(
-//                uri = URI("JetBrainsMono.ttf"),
-//                height = 0.75,
-//                measure = measure,
-//            ),
-//        )
-        onRenderInput(
-            canvas = canvas,
-            fontInfo = fontInfo,
         )
     }
 
