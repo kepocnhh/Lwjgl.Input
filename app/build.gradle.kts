@@ -1,7 +1,7 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-version = "0.0.1"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
